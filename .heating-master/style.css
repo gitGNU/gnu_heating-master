@@ -1,0 +1,12 @@
+GtkRange {
+  -GtkRange-slider-width: 100px;
+}
+
+GtkLabel {
+  font-size: 18px;
+}
+
+GtkButton {
+  font-size: 18px;
+}
+

@@ -3,7 +3,7 @@
  *
  *  Created on: 2015-03
  *      Author: D.Rabel
- *     License: See LICENSE.txt in the root folder of this project. //todo lizenz abklären
+ *     License: See LICENSE.txt in the root folder of this project.
  */
 
 #ifndef SRC_GUI_MAINWINDOW_HPP_
@@ -19,16 +19,20 @@
 
 class MainWindow : public Gtk::Window
 {
+  /*
+   * Class for main window
+   */
   public:
+    /* constructor and destructor */
     MainWindow(HeatingMaster& hm);
     virtual ~MainWindow();
 
   private:
+    /* An instance of heatingMaster class */
     HeatingMaster& heatingMaster;
-    // todo buttons
+    /* Some Gtk+ objects */
     Gtk::VBox vbox;
     Gtk::ScrolledWindow scrolledWindow;
-    //Gtk::Viewport vp;
 };
 
 

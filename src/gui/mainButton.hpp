@@ -1,9 +1,9 @@
 /*
  * mainButton.hpp
  *
- *  Created on: 12.03.2015
- *      Author: nore (D.Rabel) todo
- *     License: GPLv2 or later
+ *  Created on: 2015-03
+ *      Author: D.Rabel
+ *     License: See LICENSE.txt in the root folder of this project.
  */
 
 #ifndef SRC_GUI_MAINBUTTON_HPP_
@@ -14,22 +14,29 @@
 #include "thermostatWindow.hpp"
 
 
-class MainButton : public Gtk::Button, public ThermostatObserver
+class MainButton : public Gtk::Button
 {
+  /*
+   * Button for the main window
+   */
   public:
-    MainButton(const Glib::ustring & label, Thermostat* th) : Gtk::Button(label), thermostat(th), window(th)
+    /*
+     * Constructor
+     */
+    MainButton(const Glib::ustring & label, Thermostat* th) : Gtk::Button(label), window(th)
     {
-      //window.hide();
+      /* connect method onClicked() to clicked signal */
       signal_clicked().connect( sigc::mem_fun(*this, &MainButton::onClicked) );
-      th->attachObserver(this);
     }
+
+    /* virtual destructor */
     virtual ~MainButton();
 
+    /* onClicked() is called when button is clicked */
     void onClicked();
-    void thermostatStateUpdate(bool updating, bool upToDate, unsigned currentValue);
 
   private:
-    Thermostat*       thermostat;
+    /* ThermostatWindow is shown everytime the button is clicked */
     ThermostatWindow  window;
 };
 

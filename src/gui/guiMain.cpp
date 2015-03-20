@@ -3,27 +3,34 @@
  *
  *  Created on: 2015-03
  *      Author: D.Rabel
- *     License: See LICENSE.txt in the root folder of this project. //todo lizenz abklären
+ *     License: See LICENSE.txt in the root folder of this project.
  */
 
 #include <gtkmm.h>
-#include <cstdlib>
-#include <iostream>
-#include "../gui/guiMain.hpp"  //todo inlcude reihenfolge
-
+#include <string>
 #include "mainWindow.hpp"
+
+using namespace std;
 
 int main(int argc, char** argv)
 {
+  /*
+   * Build GTK+ Application
+   */
   Glib::RefPtr<Gtk::Application> app =
     Gtk::Application::create(argc, argv,
-      "org.gtkmm.examples.base"); //todo
+      "com.noresoft.heating-master-gui");
 
+  /* Initialize Glib threads */
+  if(!Glib::thread_supported()) Glib::thread_init();
+
+  /* Initialize heating master */
   HeatingMaster heatingMaster((string)getenv("HOME")+"/.heating-master/config.json");
-  //todo warten bis initialisiert
 
+  /* Initialize main window */
   MainWindow window(heatingMaster);
 
+  /* run */
   return app->run(window);
 }
 

@@ -12,20 +12,72 @@
 #include <iostream>
 #include <string>
 #include <chrono>
-
+#include <thread>
 #include "../core/thermostat.hpp"
 #include "../core/heatingMaster.hpp"
 
+using namespace std;
 
+/*
+ * Global variable and functions to handle in parallel thread
+ */
+static bool updating = false;
+
+/* Update all local thermostat values over the network */
+void updateAll(HeatingMaster* heatingMaster)
+{
+  for( unsigned i = 0; i<heatingMaster->getNumberOfThermostats(); i++ )
+  {
+    heatingMaster->getThermostat(i)->updateLocalValueFromSlave();
+  }
+  updating = false;
+}
+/* Update one local thermostat value over the network */
+void updateOne(Thermostat* thermostat)
+{
+  thermostat->updateLocalValueFromSlave();
+  updating = false;
+}
+/* Set one local thermostat value over the network */
+void setOne(Thermostat* thermostat)
+{
+  thermostat->updateSlaveFromLocalValue();
+  updating = false;
+}
+
+/*
+ * Print help to the screen
+ */
+void printHelp()
+{
+  cout<<"\nheating-master Help \n";
+  cout<<"\nCall without arguments: Print list of thermostats\n\n";
+  cout<<"Arguments:\n";
+  cout<<"-c 'filename': Use 'filename' instead of standard config file\n";
+  cout<<"-n 'number'  : Only print (or set) thermostat with number 'number'\n";
+  cout<<"-s 'value'   : Set thermostat value to 'value'. Only works together with -n\n";
+  cout<<"-e           : Show extended information when printing thermostat(s)\n";
+  cout<<"-h           : This help\n";
+  cout<<endl;
+}
+
+/*
+ * Main
+ */
 int main( int argc, char *argv[] )
 {
-  string filename = "";
-  int setValue = -1;
-  int number = -1;
-  bool extended = false;
-  int opt;
+  string  filename  = "";       /* Filename for config file */
+  int     setValue  = -1;       /* Value to set from the command line */
+  int     number    = -1;       /* Thermostat number from the command line */
+  bool    extended  = false;    /* Extended or not from the command line */
+  bool    help      = false;    /* Print help? from the command line */
+  int     opt;                  /* Variable for command line options */
+  thread* extraThread(0);       /* Extra thread for parallel updating of thermostats */
 
-  while( (opt=getopt(argc, argv, "c:n:s:e")) != EOF )
+  /*
+   * Process command line options
+   */
+  while( (opt=getopt(argc, argv, "c:n:s:eh")) != EOF )
   {
     switch(opt)
     {
@@ -47,47 +99,126 @@ int main( int argc, char *argv[] )
         extended = true;
         break;
 
+      case 'h':
+        help = true;
+        break;
+
       case '?':
       default:
         break;
     }
   }
 
-  if( filename.empty() )
-    filename = (string)getenv("HOME")+"/.heating-master/config.json";
-
-  HeatingMaster heatingMaster(filename);
-
-  //std::this_thread::sleep_for(std::chrono::seconds(3));
-
-  while(!heatingMaster.isInitialized()){ cout<<"."<<flush; std::this_thread::sleep_for(std::chrono::seconds(1)); }; // don't wait this long. todo don't use isInitialized()
-  cout<<endl;
-
-  //todo try catch und exceptions
-  if( number == -1 )
+  /* Print help to the screen  */
+  if( help )
   {
-    heatingMaster.printThermostatList(extended);
-    return 0;
-  }
-  if( setValue == -1 )
-  {
-    heatingMaster.printHeadline(extended);
-    heatingMaster.printThermostat((unsigned)number-1, extended);
-    cout<<endl;
-    return 0;
-  }
-  heatingMaster.getThermostat((unsigned)number-1)->setCurrentValue((unsigned)setValue, nullptr);
-  while(heatingMaster.getThermostat((unsigned)number-1)->isUpdating()) { cout<<"."<<flush; std::this_thread::sleep_for(std::chrono::seconds(1)); };
-  cout<<endl;
-  if(heatingMaster.getThermostat((unsigned)number-1)->isUpToDate())
-  {
-    cout<<"hat jeklappt"<<endl;
+    printHelp();
   }
   else
   {
-    cout<<"hat nich geklappt"<<endl;
-  }
+    /* No filename from the command line? Use default config file. */
+    if( filename.empty() )
+      filename = (string)getenv("HOME")+"/.heating-master/config.json";
 
+    /* Initialize HeatingMaster object from config file. */
+    HeatingMaster heatingMaster(filename);
+
+    /* No number argument passed? Print all thermostats. */
+    if( number == -1 )
+    {
+      updating = true;                                                  /* set updating flag */
+      extraThread = new thread( &updateAll, &heatingMaster );           /* start new thread to update thermostats */
+      while(updating)                                                   /* wait until thread has finished */
+      {
+        cout<<"."<<flush; this_thread::sleep_for(chrono::seconds(1));   /* print a . on the commandline every second */
+      };
+      extraThread->join();                                              /* join the thread to be shure it is done */
+      heatingMaster.printThermostatList(extended);                      /* print thermostat list */
+    }
+    else
+    /* No value passed? Print the thermostat. */
+    if( setValue == -1 )
+    {
+      unsigned n = number-1;                                            /* to make the following code more clear */
+      /* Print a message if the thermostat number is too high */
+      if( n > heatingMaster.getNumberOfThermostats() )
+      {
+        cout<<"Only ";
+        cout<<heatingMaster.getNumberOfThermostats();
+        cout<<" thermostats available"<<endl;
+        return -1;
+      }
+
+      updating = true;                                                  /* set updating flag */
+      extraThread =                                                     /* start new thread to update thermostat */
+          new thread( &updateOne, heatingMaster.getThermostat(n) );
+      while(updating)                                                   /* wait until thread has finished */
+      {
+        cout<<"."<<flush; this_thread::sleep_for(chrono::seconds(1));   /* print a . on the commandline every second */
+      };
+      extraThread->join();                                              /* join the thread to be shure it is done */
+
+      heatingMaster.printHeadline(extended);                            /* print head line */
+      heatingMaster.printThermostat(n, extended);                       /* print thermostat */
+
+    }
+    else
+    /* Value and number passed? Set the thermostat value. */
+    {
+      unsigned n = number-1;                                            /* to make the following code more clear */
+      /* Print a message if the thermostat number is too high */
+      if( n > heatingMaster.getNumberOfThermostats() )
+      {
+        cout<<"Only ";
+        cout<<heatingMaster.getNumberOfThermostats();
+        cout<<" thermostats available"<<endl;
+        return -1;
+      }
+
+      /* try to set value in thermostat object */
+      if( ! (heatingMaster.getThermostat(n)->setCurrentValue((unsigned)setValue)) )
+      {
+        cout<<"\nValue out of bounds, adjusting value to min or max."<<endl;
+      }
+
+      updating = true;                                                  /* set updating flag */
+      extraThread =                                                     /* start new thread to transmit thermostat value */
+          new thread( &setOne, heatingMaster.getThermostat(n) );
+      while(updating)                                                   /* wait until thread has finished */
+      {
+        cout<<"."<<flush; this_thread::sleep_for(chrono::seconds(1));   /* print a . on the commandline every second */
+      };
+      extraThread->join();                                              /* join the thread to be shure it is done */
+
+      /*
+       * Read the value back after transmitting to see if the
+       * transmission was succesful.
+       * (Unfortunately the only way to ensure this at the
+       *  moment.)
+       */
+      updating = true;                                                  /* set updating flag */
+      extraThread =                                                     /* start new thread to update thermostat */
+          new thread( &updateOne, heatingMaster.getThermostat(n) );
+      while(updating)                                                   /* wait until thread has finished */
+      {
+        cout<<"."<<flush; this_thread::sleep_for(chrono::seconds(1));   /* print a . on the commandline every second */
+      };
+      extraThread->join();                                              /* join the thread to be shure it is done */
+
+      /* Print to the command line, if the transmission was successful */
+      cout<<endl;
+      if(heatingMaster.getThermostat(n)->isUpToDate())
+      {
+        cout<<"Value set successfully"<<endl;
+      }
+      else
+      {
+        cout<<"Value could not be set"<<endl;
+      }
+    }
+
+    cout<<endl;
+  }
 
   return 0;
 }

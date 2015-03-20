@@ -10,22 +10,12 @@
 #define SRC_CORE_THERMOSTAT_HPP_
 
 #include <cstdint>
-#include <fstream>
 #include <string>
-#include <thread>
-#include <vector>
-#include "thermostatObserver.hpp"
-
-using namespace std;
 
 typedef struct {
   uint16_t blocks[8];
 } Ipv6Address;
 
-struct  ThermostatCallback {
-  void* objectPointer;
-  void (* callbackFunction)(void*);
-};
 
 class Thermostat
 {
@@ -36,64 +26,39 @@ class Thermostat
   public:
 
     /* Constructor */
-    Thermostat(Ipv6Address ip, unsigned min, unsigned max, string name) :
+    Thermostat(Ipv6Address ip, unsigned min, unsigned max, std::string name) :
       ipv6Address(ip),
       minValue(min),
       maxValue(max),
       name(name),
       currentValue((min+max)/2)
     {
-      updateLocalValueFromSlave({0, 0});
+
     }
-
-    /* Delete Copy- and Move-Constructor because of own thread */
-    Thermostat(const Thermostat&) = delete;
-    Thermostat(Thermostat&&)      = delete;
-
-    /* Destructor */
-    ~Thermostat()
-    {
-      if( updateThread.joinable() )
-      {
-        updateThread.join();
-      }
-    }
-
-    void attachObserver(ThermostatObserver* observer);
-
 
     /* Getters and Setters */
     const Ipv6Address&  getIpv6Address()  const { return ipv6Address; }
     const unsigned      getMaxValue()     const { return maxValue; }
     const unsigned      getMinValue()     const { return minValue; }
-    const string&       getName()         const { return name; }
+    const std::string&  getName()         const { return name; }
     const unsigned      getCurrentValue() const { return currentValue; }
-    const bool          isUpToDate()      const { return upToDate; }
-    const bool          isUpdating()      const { return updating; }
-    const bool          isInitialized()   const { return initialized; }
+    const unsigned      isUpToDate()      const { return upToDate; }      /* upToDate means synchronized with physical thermostat */
 
-    void setCurrentValue( unsigned value, ThermostatCallback callback );
+    bool setCurrentValue( unsigned value );
 
     /* Methods */
-    void updateLocalValueFromSlave( ThermostatCallback callback );
-    void updateSlaveFromLocalValue( ThermostatCallback callback );
+    void updateLocalValueFromSlave();
+    void updateSlaveFromLocalValue();
 
 
   private:
+    /* Private member variables */
     const Ipv6Address   ipv6Address;
     const unsigned      minValue, maxValue;
-    const string        name;
+    const std::string   name;
           unsigned      currentValue;
-          bool          upToDate    = false;
-          bool          updating    = false;
-          bool          initialized = false; // todo verschwinden lassen. depricated ;-)
-          thread        updateThread;
+          bool          upToDate = false;
 
-    vector<ThermostatObserver*> observers;
-
-    /* Methods for updating value in extra thread */
-    void updateLocalValueFromSlaveThread( ThermostatCallback callback );
-    void updateSlaveFromLocalValueThread( ThermostatCallback callback );
 };
 
 

@@ -1,36 +1,23 @@
 /*
  * mainButton.cpp
  *
- *  Created on: 12.03.2015
- *      Author: nore (D.Rabel)
- *     License: GPLv2 or later
+ *  Created on: 2015-03
+ *      Author: D.Rabel
+ *     License: See LICENSE.txt in the root folder of this project.
  */
 
 #include "mainButton.hpp"
-#include <chrono>
-#include <thread>
-#include <iostream>
 
+/*
+ * Show ThermostatWindow when clicked
+ */
 void MainButton::onClicked()
 {
-  cout<<"aufruf von außen"<<endl;
-
   window.show();
 }
-
 
 MainButton::~MainButton()
 {
 }
 
-void MainButton::thermostatStateUpdate( bool updating, bool upToDate, unsigned currentValue )
-{
-  if( updating || upToDate )
-  {
-    set_sensitive(true);
-  }
-  else
-  {
-    set_sensitive(false);
-  }
-}
+
