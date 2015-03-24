@@ -35,6 +35,14 @@ DEPENDFILE = dependencies
 
 all: distclean dep cmdline gui
 
+install: all
+	cp -r .heating-master ~
+	sudo cp -r $(EXE_DIR)/* /usr/local/bin/
+
+uninstall:
+	rm -rf ~/.heating-master
+	sudo rm -f /usr/local/bin/heating-master /usr/local/bin/heating-master-gui 
+
 distclean: 
 	rm -rf $(OBJ_DIR)
 	rm -rf $(EXE_DIR)
