@@ -67,7 +67,7 @@ MainWindow::MainWindow(HeatingMaster& hm) : heatingMaster(hm), vbox(), scrolledW
     Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
     Glib::RefPtr<Gdk::Display> display = Gdk::Display::get_default();
     Glib::RefPtr<Gdk::Screen> screen = display->get_default_screen();
-    cssProvider->load_from_path((string)getenv("HOME")+"/.heating-master/style.css");
+    cssProvider->load_from_path("/etc/heating-master/style.css");
     Gtk::StyleContext::add_provider_for_screen(screen, cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
   }
   catch(...)

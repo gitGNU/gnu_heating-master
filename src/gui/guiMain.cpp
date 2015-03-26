@@ -45,7 +45,7 @@ int main(int argc, char** argv)
   if(!Glib::thread_supported()) Glib::thread_init();
 
   /* Initialize heating master */
-  HeatingMaster heatingMaster((string)getenv("HOME")+"/.heating-master/config.json");
+  HeatingMaster heatingMaster("/etc/heating-master/heating-master.conf");
 
   /* Initialize main window */
   MainWindow window(heatingMaster);

@@ -30,6 +30,7 @@
 SRC_DIR        = src
 OBJ_DIR        = obj
 EXE_DIR        = exe
+CONF_DIR       = config
 VPATH          = $(SRC_DIR)/*
 # Source files
 SRC_CORE       = $(SRC_DIR)/core/thermostat.cpp $(SRC_DIR)/core/heatingMaster.cpp $(SRC_DIR)/core/jsonaux.cpp
@@ -57,11 +58,12 @@ DEPENDFILE = dependencies
 all: distclean dep cmdline gui
 
 install: all
-	cp -r .heating-master ~
 	sudo cp -r $(EXE_DIR)/* /usr/local/bin/
+	sudo mkdir /etc/heating-master
+	sudo cp $(CONF_DIR)/* /etc/heating-master 
 
 uninstall:
-	rm -rf ~/.heating-master
+	sudo rm -rf /etc/heating-master
 	sudo rm -f /usr/local/bin/heating-master /usr/local/bin/heating-master-gui 
 
 distclean: 
