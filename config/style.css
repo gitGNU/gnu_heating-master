@@ -3,10 +3,10 @@ GtkRange {
 }
 
 GtkLabel {
-  font-size: 18px;
+  font-size: 18;
 }
 
 GtkButton {
-  font-size: 18px;
+  font-size: 18;
 }
 
