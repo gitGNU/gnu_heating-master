@@ -26,6 +26,8 @@
 #   DAMAGE. 
 #
 
+# Version
+VERSION        = \"v1.0\"
 # Directories
 SRC_DIR        = src
 OBJ_DIR        = obj
@@ -47,7 +49,7 @@ OBJ_GUI        = $(TMP_OBJ_GUI:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 DEP            = $(SRC_ALL_BUT_EXT:%.cpp=%.dep)
 # Compiler flags
 CFLAGS         = -Wall -std=c++11
-CFLAGS_CORE    = $(CFLAGS) 
+CFLAGS_CORE    = $(CFLAGS) -DVERSION=$(VERSION)
 CFLAGS_CMDLINE = $(CFLAGS_CORE) -pthread
 CFLAGS_GUI     = $(CFLAGS_CORE) `pkg-config --cflags --libs gtkmm-3.0`
 # Dependencies file

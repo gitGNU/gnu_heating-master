@@ -82,6 +82,15 @@ void printHelp()
 }
 
 /*
+ * Print version string to the screen
+ */
+void printVersion()
+{
+  cout<<"\nheating-master "<<VERSION<<"\n";
+  cout<<endl;
+}
+
+/*
  * Main
  */
 int main( int argc, char *argv[] )
@@ -89,15 +98,16 @@ int main( int argc, char *argv[] )
   string  filename  = "";       /* Filename for config file */
   int     setValue  = -1;       /* Value to set from the command line */
   int     number    = -1;       /* Thermostat number from the command line */
-  bool    extended  = false;    /* Extended or not from the command line */
+  bool    extended  = false;    /* Extended or not? from the command line */
   bool    help      = false;    /* Print help? from the command line */
+  bool    version   = false;    /* Print version string? from the command line */ 
   int     opt;                  /* Variable for command line options */
   thread* extraThread(0);       /* Extra thread for parallel updating of thermostats */
 
   /*
    * Process command line options
    */
-  while( (opt=getopt(argc, argv, "c:n:s:eh")) != EOF )
+  while( (opt=getopt(argc, argv, "c:n:s:ehv")) != EOF )
   {
     switch(opt)
     {
@@ -123,6 +133,10 @@ int main( int argc, char *argv[] )
         help = true;
         break;
 
+      case 'v':
+        version = true;
+        break;
+
       case '?':
       default:
         break;
@@ -133,6 +147,11 @@ int main( int argc, char *argv[] )
   if( help )
   {
     printHelp();
+  }
+  /* Print version string to the screen  */
+  else if( version )
+  {
+    printVersion();
   }
   else
   {
