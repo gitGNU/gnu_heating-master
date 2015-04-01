@@ -37,7 +37,7 @@
 class HeatingMaster
 {
   /*
-   * Control class, that initializes and hold a list of the thermostats
+   * Control class, that initializes and holds a list of the thermostats
    * specified in the config file
    */
 

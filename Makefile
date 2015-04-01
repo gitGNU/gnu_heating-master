@@ -58,13 +58,13 @@ DEPENDFILE = dependencies
 all: distclean dep cmdline gui
 
 install: all
-	sudo cp -r $(EXE_DIR)/* /usr/local/bin/
-	sudo mkdir /etc/heating-master
-	sudo cp $(CONF_DIR)/* /etc/heating-master 
+	sudo cp -r $(EXE_DIR)/* $(DESTDIR)/usr/local/bin/
+	sudo mkdir $(DESTDIR)/etc/heating-master
+	sudo cp $(CONF_DIR)/* $(DESTDIR)/etc/heating-master 
 
 uninstall:
-	sudo rm -rf /etc/heating-master
-	sudo rm -f /usr/local/bin/heating-master /usr/local/bin/heating-master-gui 
+	sudo rm -rf $(DESTDIR)/etc/heating-master
+	sudo rm -f $(DESTDIR)/usr/local/bin/heating-master $(DESTDIR)/usr/local/bin/heating-master-gui 
 
 distclean: 
 	rm -rf $(OBJ_DIR)
