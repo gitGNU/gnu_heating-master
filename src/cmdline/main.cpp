@@ -70,14 +70,16 @@ void setOne(Thermostat* thermostat)
  */
 void printHelp()
 {
-  cout<<"\nheating-master Help \n";
-  cout<<"\nCall without arguments: Print list of thermostats\n\n";
-  cout<<"Arguments:\n";
-  cout<<"-c 'filename': Use 'filename' instead of standard config file\n";
-  cout<<"-n 'number'  : Only print (or set) thermostat with number 'number'\n";
-  cout<<"-s 'value'   : Set thermostat value to 'value'. Only works together with -n\n";
-  cout<<"-e           : Show extended information when printing thermostat(s)\n";
-  cout<<"-h           : This help\n";
+  cout<<"\nUsage:\n  heating-master [options]\n";
+  cout<<"\nCall without options:\n  Print list of thermostats\n";
+  cout<<"\nOptions:\n";
+  cout<<"  -c, --config <file>     : Use <file> instead of standard config file\n";
+  cout<<"  -n, --number <number>   : Only print (or set) thermostat with number <number>\n";
+  cout<<"  -s, --set-value <value> : Set thermostat value to 'value'.\n"
+        "                            Only works together with -n (--numbers)\n";
+  cout<<"  -e, --extended          : Show extended thermostat information\n";
+  cout<<"  -v, --version           : Print version string\n";
+  cout<<"  -h, --help              : Print this help\n";
   cout<<endl;
 }
 
@@ -101,13 +103,24 @@ int main( int argc, char *argv[] )
   bool    extended  = false;    /* Extended or not? from the command line */
   bool    help      = false;    /* Print help? from the command line */
   bool    version   = false;    /* Print version string? from the command line */ 
-  int     opt;                  /* Variable for command line options */
+  int     opt, option_index;    /* Variables for command line options */
   thread* extraThread(0);       /* Extra thread for parallel updating of thermostats */
+
+  struct option long_options[] =
+  {
+    {"config",    required_argument, 0, 'c'},
+    {"number",    required_argument, 0, 'n'},
+    {"set-value", required_argument, 0, 's'},
+    {"extended",  no_argument,       0, 'e'},
+    {"help",      no_argument,       0, 'h'},
+    {"version",   no_argument,       0, 'v'},
+    {0, 0, 0, 0}
+  };
 
   /*
    * Process command line options
    */
-  while( (opt=getopt(argc, argv, "c:n:s:ehv")) != EOF )
+  while( (opt=getopt_long(argc, argv, "c:n:s:ehv", long_options, &option_index)) != EOF )
   {
     switch(opt)
     {
