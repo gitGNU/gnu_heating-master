@@ -1,1 +1,17 @@
-To install Heating Master, run "make install".
+Prerequesites:
+  -You need at least G++ version 4.7 . The Makefile tries to invoke it
+   via "g++". So if you have more than one g++ version isntalled, make
+   sure, that the "g++" link points to the right version.
+  -You need the Gtkmm library. On debian systems that would be the
+   package libgtkmm-3.0-dev
+
+Building:
+  -To build Heating Master, run "make".
+  -To build only the command line tool heating-master,
+   run "make dep cmdline"
+  -To build only the gui tool heating-master-gui, run
+   "make dep gui"
+
+Installation:
+  -To install Heating Master, run "make install".
+
