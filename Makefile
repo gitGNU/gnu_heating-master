@@ -17,12 +17,13 @@
 #     GNU General Public License for more details.
 #  
 #     You should have received a copy of the GNU General Public License
-#     along with Heating Master. If not, see <http://www.gnu.org/licenses/>.
+#     along with Heating Master; see the file COPYING. 
+#     If not, see <http://www.gnu.org/licenses/>.
 #  
 #
 
 # Version
-VERSION        = \"v1.0\"
+VERSION        = \"`cat VERSION | awk '{printf $$1 }'`\"
 # Directories
 SRC_DIR        = src
 OBJ_DIR        = obj
