@@ -261,6 +261,8 @@ int main( int argc, char *argv[] )
       if(heatingMaster.getThermostat(n)->isUpToDate())
       {
         cout<<"Value set successfully"<<endl;
+        if(heatingMaster.getThermostat(n)->getCurrentValue() != (unsigned) setValue)
+          cout<<"Value was adjusted to "<<heatingMaster.getThermostat(n)->getCurrentValue()<<endl;
       }
       else
       {
