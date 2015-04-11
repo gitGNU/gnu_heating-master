@@ -26,32 +26,116 @@
  *  DAMAGE.
  */
 
+#include <getopt.h>
 #include <gtkmm.h>
+#include <iostream>
 #include <string>
 #include "mainWindow.hpp"
 
 using namespace std;
 
+/*
+ * Print help to the screen
+ */
+void printHelp()
+{
+  cout<<"\nUsage:\n  heating-master-gui [options]\n";
+  cout<<"\nOptions:\n";
+  cout<<"  -c, --config <file>     : Use <file> instead of standard config file\n";
+  cout<<"  -v, --version           : Print version string\n";
+  cout<<"  -h, --help              : Print this help\n";
+  cout<<endl;
+}
+
+/*
+ * Print version string to the screen
+ */
+void printVersion()
+{
+  cout<<"\nheating-master-gui "<<VERSION<<"\n";
+  cout<<endl;
+}
+
+
 int main(int argc, char** argv)
 {
+  string  filename  = "";       /* Filename for config file */
+  bool    help      = false;    /* Print help? from the command line */
+  bool    version   = false;    /* Print version string? from the command line */
+  int     opt, option_index;    /* Variables for command line options */
+
+  /* long version of cmdline options */
+  struct option long_options[] =
+  {
+    {"config",    required_argument, 0, 'c'},
+    {"help",      no_argument,       0, 'h'},
+    {"version",   no_argument,       0, 'v'},
+    {0, 0, 0, 0}
+  };
+
   /*
-   * Build GTK+ Application
+   * Process command line options
    */
-  Glib::RefPtr<Gtk::Application> app =
-    Gtk::Application::create(argc, argv,
-      "com.noresoft.heating-master-gui");
+  while( (opt=getopt_long(argc, argv, "c:hv", long_options, &option_index)) != EOF )
+  {
+    switch(opt)
+    {
+      case 'c':
+        filename = optarg;
+        break;
 
-  /* Initialize Glib threads */
-  if(!Glib::thread_supported()) Glib::thread_init();
+      case 'h':
+        help = true;
+        break;
 
-  /* Initialize heating master */
-  HeatingMaster heatingMaster("/etc/heating-master/heating-master.conf");
+      case 'v':
+        version = true;
+        break;
 
-  /* Initialize main window */
-  MainWindow window(heatingMaster);
+      case '?':
+      default:
+        break;
+    }
+  }
 
-  /* run */
-  return app->run(window);
+  /* Print help to the screen  */
+  if( help )
+  {
+    printHelp();
+  }
+  /* Print version string to the screen  */
+  else if( version )
+  {
+    printVersion();
+  }
+  else
+  {
+    /*
+     * Build GTK+ Application
+     */
+    int argc1 = 1;
+    Glib::RefPtr<Gtk::Application> app =
+      Gtk::Application::create(argc1, argv,
+        "com.noresoft.heating-master-gui");
+
+    /* Initialize Glib threads */
+    if(!Glib::thread_supported()) Glib::thread_init();
+
+    /* No filename from the command line? Use default config file. */
+    if( filename.empty() )
+      filename = "/etc/heating-master/heating-master.conf";
+
+    /* Initialize heating master */
+    HeatingMaster heatingMaster(filename);
+
+    /* Initialize main window */
+    MainWindow window(heatingMaster);
+
+    /* run */
+    return app->run(window);
+  }
+
+  return 0;
 }
 
 
