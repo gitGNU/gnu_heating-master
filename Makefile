@@ -55,32 +55,36 @@ CFLAGS_GUI     = $(CFLAGS_CORE) `pkg-config --cflags --libs gtkmm-3.0`
 # Dependencies file
 DEPENDFILE = dependencies
 
-# Targets 
+# Targets
 
-all: distclean dep cmdline gui
+all: dep cmdline gui
 
 install: all
-	sudo cp -r $(EXE_DIR)/* $(DESTDIR)/usr/local/bin/
-	sudo mkdir $(DESTDIR)/etc/heating-master
-	sudo cp $(CONF_DIR)/* $(DESTDIR)/etc/heating-master 
-
+	install -d $(DESTDIR)/usr/local/bin/
+	sudo install $(EXE_DIR)/* $(DESTDIR)/usr/local/bin/
+	if ! [ `install -d $(DESTDIR)/etc/heating-master/ 2>/dev/null` ]; then sudo install -d $(DESTDIR)/etc/heating-master/; fi;
+	sudo install -o $(USER) -g `id -gn` -m 644 $(CONF_DIR)/* $(DESTDIR)/etc/heating-master
+	
 uninstall:
 	sudo rm -rf $(DESTDIR)/etc/heating-master
-	sudo rm -f $(DESTDIR)/usr/local/bin/heating-master $(DESTDIR)/usr/local/bin/heating-master-gui 
+	sudo rm -f $(DESTDIR)/usr/local/bin/heating-master $(DESTDIR)/usr/local/bin/heating-master-gui
+	rm -rf $(DESTDIR)
 
-distclean: 
+distclean:
 	rm -rf $(OBJ_DIR)
 	rm -rf $(EXE_DIR)
 	rm -f $(DEPENDFILE)
 
-dep: $(DEP)
+dir:
+	if ! [ -d $(EXE_DIR) ]; then mkdir $(EXE_DIR); fi
+	if ! [ -d $(OBJ_DIR) ]; then mkdir $(OBJ_DIR); fi
+	cd $(SRC_DIR); find -type d -exec mkdir -p "../$(OBJ_DIR)/{}" \;
+
+dep: dir $(DEP)
 	cat $(DEP) > $(DEPENDFILE)
 	rm -f $(SRC_DIR)/*/*.dep
 
-%.dep: %.cpp
-	if ! [ -d $(OBJ_DIR) ]; then mkdir $(OBJ_DIR); fi
-	if ! [ -d $(@D:$(SRC_DIR)/%=$(OBJ_DIR)/%) ]; then mkdir $(@D:$(SRC_DIR)/%=$(OBJ_DIR)/%); fi
-	if ! [ -d $(EXE_DIR) ]; then mkdir $(EXE_DIR); fi
+%.dep: %.cpp Makefile
 	g++ -std=c++11 -MM $< -MT $(*:$(SRC_DIR)/%=$(OBJ_DIR)/%).o >>$@
 
 -include $(DEPENDFILE)
@@ -96,10 +100,7 @@ gui: $(OBJ_GUI)
 $(OBJ_DIR)/core/%.o: $(SRC_DIR)/core/%.cpp Makefile
 	g++ -c $< -o $@ $(CFLAGS_CORE)
 
-$(OBJ_DIR)/external/json-parser/json.o: $(SRC_DIR)/external/json-parser/json.c $(SRC_DIR)/external/json-parser/json.h
-	if ! [ -d $(OBJ_DIR) ]; then mkdir $(OBJ_DIR); fi
-	if ! [ -d $(OBJ_DIR)/external ]; then mkdir $(OBJ_DIR)/external; fi
-	if ! [ -d $(OBJ_DIR)/external/json-parser ]; then mkdir $(OBJ_DIR)/external/json-parser; fi
+$(OBJ_DIR)/external/json-parser/json.o: $(SRC_DIR)/external/json-parser/json.c $(SRC_DIR)/external/json-parser/json.h Makefile
 	g++ -c $< -o $@ $(CFLAGS_CORE)
 
 $(OBJ_DIR)/cmdline/%.o: $(SRC_DIR)/cmdline/%.cpp Makefile
