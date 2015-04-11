@@ -52,6 +52,9 @@ void printHelp()
  */
 void printVersion()
 {
+#ifndef VERSION
+#define VERSION "version unknown"
+#endif
   cout<<"\nheating-master-gui "<<VERSION<<"\n";
   cout<<endl;
 }

@@ -88,6 +88,9 @@ void printHelp()
  */
 void printVersion()
 {
+#ifndef VERSION
+#define VERSION "version unknown"
+#endif
   cout<<"\nheating-master "<<VERSION<<"\n";
   cout<<endl;
 }
@@ -106,6 +109,7 @@ int main( int argc, char *argv[] )
   int     opt, option_index;    /* Variables for command line options */
   thread* extraThread(0);       /* Extra thread for parallel updating of thermostats */
 
+  /* long version of cmdline options */
   struct option long_options[] =
   {
     {"config",    required_argument, 0, 'c'},
