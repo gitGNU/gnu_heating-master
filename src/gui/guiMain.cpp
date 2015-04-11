@@ -37,6 +37,7 @@ void printHelp()
   cout<<"\nUsage:\n  heating-master-gui [options]\n";
   cout<<"\nOptions:\n";
   cout<<"  -c, --config <file>     : Use <file> instead of standard config file\n";
+  cout<<"  -s, --style <file>      : Use <file> instead of standard style file\n";
   cout<<"  -v, --version           : Print version string\n";
   cout<<"  -h, --help              : Print this help\n";
   cout<<endl;
@@ -57,7 +58,8 @@ void printVersion()
 
 int main(int argc, char** argv)
 {
-  string  filename  = "";       /* Filename for config file */
+  string  config    = "";       /* Filename for config file */
+  string  style     = "";
   bool    help      = false;    /* Print help? from the command line */
   bool    version   = false;    /* Print version string? from the command line */
   int     opt, option_index;    /* Variables for command line options */
@@ -66,6 +68,7 @@ int main(int argc, char** argv)
   struct option long_options[] =
   {
     {"config",    required_argument, 0, 'c'},
+    {"style",     required_argument, 0, 's'},
     {"help",      no_argument,       0, 'h'},
     {"version",   no_argument,       0, 'v'},
     {0, 0, 0, 0}
@@ -74,12 +77,16 @@ int main(int argc, char** argv)
   /*
    * Process command line options
    */
-  while( (opt=getopt_long(argc, argv, "c:hv", long_options, &option_index)) != EOF )
+  while( (opt=getopt_long(argc, argv, "c:s:hv", long_options, &option_index)) != EOF )
   {
     switch(opt)
     {
       case 'c':
-        filename = optarg;
+        config = optarg;
+        break;
+
+      case 's':
+        style = optarg;
         break;
 
       case 'h':
@@ -120,14 +127,18 @@ int main(int argc, char** argv)
     if(!Glib::thread_supported()) Glib::thread_init();
 
     /* No filename from the command line? Use default config file. */
-    if( filename.empty() )
-      filename = "/etc/heating-master/heating-master.conf";
+    if( config.empty() )
+      config = "/etc/heating-master/heating-master.conf";
 
     /* Initialize heating master */
-    HeatingMaster heatingMaster(filename);
+    HeatingMaster heatingMaster(config);
+
+    /* No filename from the command line? Use default style file. */
+    if( style.empty() )
+      style = "/etc/heating-master/style.css";
 
     /* Initialize main window */
-    MainWindow window(heatingMaster);
+    MainWindow window(heatingMaster, style);
 
     /* run */
     return app->run(window);

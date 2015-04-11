@@ -24,6 +24,7 @@
 #ifndef SRC_GUI_MAINWINDOW_HPP_
 #define SRC_GUI_MAINWINDOW_HPP_
 
+#include <string>
 #include <gtkmm.h>
 #include <gtkmm/window.h>
 #include <gtkmm/viewport.h>
@@ -39,7 +40,7 @@ class MainWindow : public Gtk::Window
    */
   public:
     /* constructor and destructor */
-    MainWindow(HeatingMaster& hm);
+    MainWindow(HeatingMaster& hm, std::string style);
     virtual ~MainWindow();
 
   private:
