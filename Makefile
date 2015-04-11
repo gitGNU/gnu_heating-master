@@ -23,7 +23,8 @@
 #
 
 # Version
-VERSION        = \"`cat VERSION | awk '{printf $$1 }'`\"
+VERSION_FILE   = VERSION
+VERSION        = \"`cat $(VERSION_FILE) | awk '{printf $$1 }'`\"
 # Directories
 SRC_DIR        = src
 OBJ_DIR        = obj
@@ -53,6 +54,8 @@ DEPENDFILE = dependencies
 
 # Targets
 
+.PHONY: all install uninstall distclean dir dep cmdline gui
+
 all: dep cmdline gui
 
 install: all
@@ -60,7 +63,7 @@ install: all
 	sudo install $(EXE_DIR)/* $(DESTDIR)/usr/local/bin/
 	if ! [ `install -d $(DESTDIR)/etc/heating-master/ 2>/dev/null` ]; then sudo install -d $(DESTDIR)/etc/heating-master/; fi;
 	sudo install -o $(USER) -g `id -gn` -m 644 $(CONF_DIR)/* $(DESTDIR)/etc/heating-master
-	
+
 uninstall:
 	sudo rm -rf $(DESTDIR)/etc/heating-master
 	sudo rm -f $(DESTDIR)/usr/local/bin/heating-master $(DESTDIR)/usr/local/bin/heating-master-gui
@@ -93,14 +96,14 @@ gui: $(OBJ_GUI)
 	g++ $(OBJ_GUI) -o $(EXE_DIR)/heating-master-gui $(CFLAGS_GUI)
 	
 
-$(OBJ_DIR)/core/%.o: $(SRC_DIR)/core/%.cpp Makefile
+$(OBJ_DIR)/core/%.o: $(SRC_DIR)/core/%.cpp Makefile $(VERSION_FILE)
 	g++ -c $< -o $@ $(CFLAGS_CORE)
 
 $(OBJ_DIR)/external/json-parser/json.o: $(SRC_DIR)/external/json-parser/json.c $(SRC_DIR)/external/json-parser/json.h Makefile
 	g++ -c $< -o $@ $(CFLAGS_CORE)
 
-$(OBJ_DIR)/cmdline/%.o: $(SRC_DIR)/cmdline/%.cpp Makefile
+$(OBJ_DIR)/cmdline/%.o: $(SRC_DIR)/cmdline/%.cpp Makefile $(VERSION_FILE)
 	g++ -c $< -o $@ $(CFLAGS_CMDLINE)
 	
-$(OBJ_DIR)/gui/%.o: $(SRC_DIR)/gui/%.cpp Makefile
+$(OBJ_DIR)/gui/%.o: $(SRC_DIR)/gui/%.cpp Makefile $(VERSION_FILE)
 	g++ -c $< -o $@ $(CFLAGS_GUI)
