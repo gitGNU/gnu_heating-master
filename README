@@ -4,7 +4,7 @@ Version:
   For current version see the file VERSION
 
 Short description:
-  A small command line and gui tool to manage Merkurboard- 
+  A small command line and gui tool to manage Merkurboard-
   (http://osdwiki.open-entry.com/doku.php/en:projekte:merkur) and Contiki-
   (http://www.contiki-os.org/) based thermostats.
 
@@ -13,7 +13,7 @@ Installation:
 
 Usage:
   heating-master --help
-  heating-master-gui --help  
+  heating-master-gui --help
 
 Submodules:
   json-parser (https://github.com/udp/json-parser)
@@ -22,8 +22,8 @@ Authors:
   For a list of authors see AUTHORS
 
 License:
-  For license information see LICENSE 
+  For license information see LICENSE
 
 Maintainer:
-  For feedback, bug reports and feature requests contact 
-  David.Rabel@NoreSoft.
+  For feedback, bug reports and feature requests contact
+  David.Rabel@NoreSoft.com
