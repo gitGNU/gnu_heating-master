@@ -25,6 +25,7 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <string>
+#include <config.h>
 #include "mainWindow.hpp"
 
 using namespace std;

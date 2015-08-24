@@ -1,8 +1,3 @@
-[1.0.1] - 2015-04-11
- - Changed Dokumentation and Makefile to get closer to GNU standards
- - License changed to GPLv2+
- - New command line options
- - Notify user, if the value to set had to be adjusted in command line tool
+For a brief description of changes between versions see NEWS. 
 
-[1.0] - 2015-03-30
- - Initial version
+For a detailed record of changes please have a look at the git repository.

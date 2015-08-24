@@ -1,8 +1,5 @@
 Heating Master
 
-Version:
-  For current version see the file VERSION
-
 Short description:
   A small command line and gui tool to manage Merkurboard-
   (http://osdwiki.open-entry.com/doku.php/en:projekte:merkur) and Contiki-
@@ -22,7 +19,7 @@ Authors:
   For a list of authors see AUTHORS
 
 License:
-  For license information see LICENSE
+  For license information see COPYING
 
 Maintainer:
   For feedback, bug reports and feature requests contact

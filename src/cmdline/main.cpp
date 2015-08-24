@@ -28,6 +28,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <config.h>
 #include "../core/thermostat.hpp"
 #include "../core/heatingMaster.hpp"
 
