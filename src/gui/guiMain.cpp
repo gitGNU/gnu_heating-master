@@ -129,14 +129,14 @@ int main(int argc, char** argv)
 
     /* No filename from the command line? Use default config file. */
     if( config.empty() )
-      config = "/etc/heating-master/heating-master.conf";
+      config = CONF_PATH "/heating-master.conf";
 
     /* Initialize heating master */
     HeatingMaster heatingMaster(config);
 
     /* No filename from the command line? Use default style file. */
     if( style.empty() )
-      style = "/etc/heating-master/style.css";
+      style = CONF_PATH "/style.css";
 
     /* Initialize main window */
     MainWindow window(heatingMaster, style);
