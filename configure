@@ -2460,8 +2460,6 @@ END
 fi
 
 
-
-
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -3951,7 +3949,9 @@ else
     }
 
     // Check for C++11 attribute support
-    void noret [[noreturn]] () { throw 0; }
+    // Disabled this, because it is not supported by g++-4.7 and
+    // not needed by heating-master
+    //void noret [[noreturn]] () { throw 0; }
 
 _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :
@@ -4029,7 +4029,9 @@ else
     }
 
     // Check for C++11 attribute support
-    void noret [[noreturn]] () { throw 0; }
+    // Disabled this, because it is not supported by g++-4.7 and
+    // not needed by heating-master
+    //void noret [[noreturn]] () { throw 0; }
 
 _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :
@@ -4113,7 +4115,9 @@ else
     }
 
     // Check for C++11 attribute support
-    void noret [[noreturn]] () { throw 0; }
+    // Disabled this, because it is not supported by g++-4.7 and
+    // not needed by heating-master
+    //void noret [[noreturn]] () { throw 0; }
 
 _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :

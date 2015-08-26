@@ -1,3 +1,8 @@
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#  ATTENTION: This file was modified for project heating-master!
+#             Use the link below for the original version.
+#             (2015-08-27)
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # ============================================================================
 #  http://www.gnu.org/software/autoconf-archive/ax_cxx_compile_stdcxx_11.html
 # ============================================================================
@@ -87,7 +92,9 @@ m4_define([_AX_CXX_COMPILE_STDCXX_11_testbody], [[
     }
 
     // Check for C++11 attribute support
-    void noret [[noreturn]] () { throw 0; }
+    // Disabled this, because it is not supported by g++-4.7 and
+    // not needed by heating-master
+    //void noret [[noreturn]] () { throw 0; }
 ]])
 
 AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl

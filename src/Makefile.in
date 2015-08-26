@@ -81,8 +81,7 @@ subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps =  \
-	$(top_srcdir)/m4macros/ax_cxx_compile_stdcxx_11.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -285,14 +284,15 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = subdir-objects
+AM_CPPFLAGS = -DCONF_PATH=\"$(sysconfdir)/heating-master\"
 HEATING_MASTER_CORE_SRC = core/thermostat.cpp core/thermostat.hpp core/heatingMaster.cpp core/heatingMaster.hpp core/jsonaux.cpp core/jsonaux.hpp
 HEATING_MASTER_JSON_SRC = external/json-parser/json.c external/json-parser/json.h
 HEATING_MASTER_CMDLINE_SRC = cmdline/main.cpp
 HEATING_MASTER_GUI_SRC = gui/guiMain.cpp gui/mainButton.cpp gui/mainButton.hpp gui/mainWindow.cpp gui/mainWindow.hpp gui/thermostatWindow.cpp gui/thermostatWindow.hpp
 heating_master_SOURCES = $(HEATING_MASTER_CORE_SRC) $(HEATING_MASTER_JSON_SRC) $(HEATING_MASTER_CMDLINE_SRC)
 heating_master_gui_SOURCES = $(HEATING_MASTER_CORE_SRC) $(HEATING_MASTER_JSON_SRC) $(HEATING_MASTER_GUI_SRC)
-heating_master_CPPFLAGS = -pthread
-heating_master_gui_CPPFLAGS = $(GTKMM_CFLAGS)
+heating_master_CPPFLAGS = -pthread $(AM_CPPFLAGS)
+heating_master_gui_CPPFLAGS = $(GTKMM_CFLAGS) $(AM_CPPFLAGS)
 heating_master_LDFLAGS = -pthread
 heating_master_gui_LDADD = $(GTKMM_LIBS)
 all: all-am

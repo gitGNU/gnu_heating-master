@@ -170,7 +170,7 @@ int main( int argc, char *argv[] )
   {
     /* No filename from the command line? Use default config file. */
     if( filename.empty() )
-      filename = "/etc/heating-master/heating-master.conf";
+      filename = CONF_PATH "/heating-master.conf";
 
     /* Initialize HeatingMaster object from config file. */
     HeatingMaster heatingMaster(filename);
