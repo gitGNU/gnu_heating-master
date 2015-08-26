@@ -3,5 +3,7 @@ Authors of Heating Master
 For authors of external submodules read their AUTHORS file.
 (external submodules located at src/external/)
 
+For authors of external m4 macro look at header of acinclude file.
+
 List of authors:
   David Rabel (David.Rabel@NoreSoft.com)
