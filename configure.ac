@@ -1,4 +1,4 @@
-AC_INIT([heating-master], [1.0.1], [David.Rabel@NoreSoft.com])
+AC_INIT([heating-master], [1.0.2], [David.Rabel@NoreSoft.com])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 AC_PROG_CC
